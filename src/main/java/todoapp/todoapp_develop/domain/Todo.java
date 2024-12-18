@@ -8,7 +8,7 @@ import todoapp.todoapp_develop.dto.TodoResponseDto;
 @Entity
 @Getter
 @Setter
-@Table(name = "todo")
+@Table(name = "todos")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Todo extends BaseEntity {
