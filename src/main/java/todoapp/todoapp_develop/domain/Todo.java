@@ -3,9 +3,11 @@ package todoapp.todoapp_develop.domain;
 import lombok.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import todoapp.todoapp_develop.dto.TodoResponseDto;
 
 @Entity
 @Getter
+@Setter
 @Table(name = "todo")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,4 +25,15 @@ public class Todo extends BaseEntity {
     @NotBlank(message = "할일 내용이 비어있습니다.")
     private String todo; // 할일 내용
 
+    // Entity -> ResponseDto 변환 메서드
+    public static TodoResponseDto todoResponseDto(Todo todo) {
+        return TodoResponseDto.builder()
+                .id(todo.getId())
+                .username(todo.getUsername())
+                .title(todo.getTitle())
+                .todo(todo.getTodo())
+                .createdAt(todo.getCreatedAt())
+                .updatedAt(todo.getUpdatedAt())
+                .build();
+    }
 }
