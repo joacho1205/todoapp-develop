@@ -18,18 +18,19 @@ public class Todo extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 일정 ID (고유값)
-    @NotBlank(message = "작성 유저명이 비어있습니다.")
-    private String username; // 작성 유저명
     @NotBlank(message = "할일 제목이 비어있습니다.")
     private String title; // 할일 제목
     @NotBlank(message = "할일 내용이 비어있습니다.")
     private String todo; // 할일 내용
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user; // 작성 유저
 
     // Entity -> ResponseDto 변환 메서드
     public static TodoResponseDto todoResponseDto(Todo todo) {
         return TodoResponseDto.builder()
                 .id(todo.getId())
-                .username(todo.getUsername())
+                .username(todo.getUser().getUsername())
                 .title(todo.getTitle())
                 .todo(todo.getTodo())
                 .createdAt(todo.getCreatedAt())

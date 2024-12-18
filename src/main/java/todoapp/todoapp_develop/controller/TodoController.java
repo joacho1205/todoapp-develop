@@ -3,7 +3,6 @@ package todoapp.todoapp_develop.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import todoapp.todoapp_develop.domain.Todo;
 import todoapp.todoapp_develop.dto.TodoRequestDto;
 import todoapp.todoapp_develop.dto.TodoResponseDto;
 import todoapp.todoapp_develop.service.TodoService;
@@ -20,7 +19,7 @@ public class TodoController {
     /** json
      *  요청------------------
      *  {
-     *     "username": "minjae",
+     *     "userId": "1",
      *     "title": "sleep",
      *     "todo": "good sleep"
      *  }

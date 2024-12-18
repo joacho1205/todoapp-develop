@@ -4,9 +4,11 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import todoapp.todoapp_develop.domain.Todo;
+import todoapp.todoapp_develop.domain.User;
 import todoapp.todoapp_develop.dto.TodoRequestDto;
 import todoapp.todoapp_develop.dto.TodoResponseDto;
 import todoapp.todoapp_develop.repository.TodoRepository;
+import todoapp.todoapp_develop.repository.UserRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,11 +19,15 @@ import java.util.stream.Collectors;
 public class TodoService {
     // 속성
     private final TodoRepository todoRepository;
+    private final UserRepository userRepository;
 
     // 일정 생성
     public TodoResponseDto createTodo(TodoRequestDto todoRequestDto) {
+        User user = userRepository.findById(todoRequestDto.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
+
         Todo todo = new Todo();
-        todo.setUsername(todoRequestDto.getUsername());
+        todo.setUser(user);
         todo.setTitle(todoRequestDto.getTitle());
         todo.setTodo(todoRequestDto.getTodo());
 
@@ -47,7 +53,10 @@ public class TodoService {
     public TodoResponseDto updateTodo(Long id, TodoRequestDto requestDto) {
         Todo todo = todoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("일정이 존재하지 않습니다."));
-        todo.setUsername(requestDto.getUsername());
+        User user = userRepository.findById(requestDto.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
+
+        todo.setUser(user);
         todo.setTitle(requestDto.getTitle());
         todo.setTodo(requestDto.getTodo());
 

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @Table(name = "users")
-public class User {
+public class User extends BaseEntity {
     // 유저 데이터를 관리하기 위한 엔티티
 
     // 속성
@@ -26,9 +26,6 @@ public class User {
     private String username; // 유저명
     @NotBlank(message = "이메일이 비어있습니다.")
     private String email; // 이메일
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createdAt; // 작성일
 
     // Entity -> ResponseDto 변환 메서드
     public static UserResponseDto userResponseDto(User user) {

@@ -25,7 +25,10 @@ public class UserController {
      *  ---------------------
      *  응답 -----------------
      *  {
-     *
+     *     "id": 1,
+     *     "username": "minjae",
+     *     "email": "asd@gmail.com",
+     *     "createdAt": ***
      *  }
      */
     // 유저 생성
