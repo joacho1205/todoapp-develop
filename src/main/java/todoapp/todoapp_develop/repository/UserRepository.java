@@ -5,4 +5,5 @@ import todoapp.todoapp_develop.domain.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
 }

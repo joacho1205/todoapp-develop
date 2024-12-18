@@ -18,6 +18,27 @@ public class UserService {
     // 속성
     private final UserRepository userRepository;
 
+    // 회원가입
+    public UserResponseDto registerUser(UserRequestDto userRequestDto) {
+        if (userRepository.existsByUsername(userRequestDto.getUsername())) {
+            throw new IllegalArgumentException("이미 사용 중인 유저명입니다.");
+        }
+        if (userRepository.existsByEmail(userRequestDto.getEmail())) {
+            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+        }
+        User user = new User();
+        user.setUsername(userRequestDto.getUsername());
+        user.setEmail(userRequestDto.getEmail());
+        user.setPassword(userRequestDto.getPassword());
+        User savedUser = userRepository.save(user);
+        return UserResponseDto.builder()
+                .id(savedUser.getId())
+                .username(savedUser.getUsername())
+                .email(savedUser.getEmail())
+                .createdAt(savedUser.getCreatedAt())
+                .build();
+    }
+
     // 유저 생성
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
         if (userRepository.existsByUsername(userRequestDto.getUsername())) {

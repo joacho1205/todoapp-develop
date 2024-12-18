@@ -16,6 +16,12 @@ public class UserController {
     // 속성
     private final UserService userService;
 
+    // 회원가입
+    @PostMapping("/register")
+    public ResponseEntity<UserResponseDto> registerUser(@RequestBody UserRequestDto requestDto) {
+        return ResponseEntity.ok(userService.registerUser(requestDto));
+    }
+
     /** json
      *  요청------------------
      *  {

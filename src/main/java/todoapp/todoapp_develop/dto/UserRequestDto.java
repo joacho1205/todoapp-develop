@@ -16,4 +16,7 @@ public class UserRequestDto {
     @NotBlank(message = "이메일이 비어있습니다.")
     @Email(message = "유효하지 않은 이메일 형식입니다.")
     private String email;
+
+    @NotBlank(message = "비밀번호가 비어있습니다.")
+    private String password;
 }
