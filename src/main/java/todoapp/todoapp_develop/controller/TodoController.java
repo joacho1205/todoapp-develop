@@ -3,8 +3,8 @@ package todoapp.todoapp_develop.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import todoapp.todoapp_develop.dto.TodoRequestDto;
-import todoapp.todoapp_develop.dto.TodoResponseDto;
+import todoapp.todoapp_develop.dto.RequestDto.TodoRequestDto;
+import todoapp.todoapp_develop.dto.ResponseDto.TodoResponseDto;
 import todoapp.todoapp_develop.service.TodoService;
 
 import java.util.List;

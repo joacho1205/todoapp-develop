@@ -1,4 +1,4 @@
-package todoapp.todoapp_develop.dto;
+package todoapp.todoapp_develop.dto.RequestDto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

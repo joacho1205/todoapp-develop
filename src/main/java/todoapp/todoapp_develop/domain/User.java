@@ -6,10 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import todoapp.todoapp_develop.dto.UserResponseDto;
-
-import java.time.LocalDateTime;
+import todoapp.todoapp_develop.dto.ResponseDto.UserResponseDto;
 
 @Entity
 @Getter

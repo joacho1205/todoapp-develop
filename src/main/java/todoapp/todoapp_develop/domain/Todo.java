@@ -3,7 +3,7 @@ package todoapp.todoapp_develop.domain;
 import lombok.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import todoapp.todoapp_develop.dto.TodoResponseDto;
+import todoapp.todoapp_develop.dto.ResponseDto.TodoResponseDto;
 
 @Entity
 @Getter

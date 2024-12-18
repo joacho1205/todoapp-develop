@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import todoapp.todoapp_develop.domain.Todo;
 import todoapp.todoapp_develop.domain.User;
-import todoapp.todoapp_develop.dto.TodoRequestDto;
-import todoapp.todoapp_develop.dto.TodoResponseDto;
+import todoapp.todoapp_develop.dto.RequestDto.TodoRequestDto;
+import todoapp.todoapp_develop.dto.ResponseDto.TodoResponseDto;
 import todoapp.todoapp_develop.repository.TodoRepository;
 import todoapp.todoapp_develop.repository.UserRepository;
 

@@ -4,11 +4,14 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import todoapp.todoapp_develop.domain.User;
-import todoapp.todoapp_develop.dto.UserRequestDto;
-import todoapp.todoapp_develop.dto.UserResponseDto;
+import todoapp.todoapp_develop.dto.RequestDto.LoginRequestDto;
+import todoapp.todoapp_develop.dto.RequestDto.UserRequestDto;
+import todoapp.todoapp_develop.dto.ResponseDto.LoginResponseDto;
+import todoapp.todoapp_develop.dto.ResponseDto.UserResponseDto;
 import todoapp.todoapp_develop.repository.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +39,20 @@ public class UserService {
                 .username(savedUser.getUsername())
                 .email(savedUser.getEmail())
                 .createdAt(savedUser.getCreatedAt())
+                .build();
+    }
+
+    // 로그인
+    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+        Optional<User> loginUser = userRepository.findByEmail(loginRequestDto.getEmail());
+        User user = loginUser.orElseThrow(() -> new IllegalArgumentException("이메일 또는 비밀번호가 잘못되었습니다."));
+        if (!user.getPassword().equals(loginRequestDto.getPassword())) {
+            throw new IllegalArgumentException("이메일 또는 비밀번호가 잘못되었습니다.");
+        }
+
+        return LoginResponseDto.builder()
+                .message("로그인 성공")
+                .username(user.getUsername())
                 .build();
     }
 
