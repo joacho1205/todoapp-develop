@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import todoapp.todoapp_develop.domain.Todo;
 import todoapp.todoapp_develop.domain.User;
-import todoapp.todoapp_develop.dto.RequestDto.TodoRequestDto;
-import todoapp.todoapp_develop.dto.ResponseDto.TodoResponseDto;
+import todoapp.todoapp_develop.dto.requestdto.TodoRequestDto;
+import todoapp.todoapp_develop.dto.responsedto.TodoResponseDto;
 import todoapp.todoapp_develop.repository.TodoRepository;
 import todoapp.todoapp_develop.repository.UserRepository;
 
@@ -53,10 +53,7 @@ public class TodoService {
     public TodoResponseDto updateTodo(Long id, TodoRequestDto requestDto) {
         Todo todo = todoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("일정이 존재하지 않습니다."));
-        User user = userRepository.findById(requestDto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
 
-        todo.setUser(user);
         todo.setTitle(requestDto.getTitle());
         todo.setTodo(requestDto.getTodo());
 

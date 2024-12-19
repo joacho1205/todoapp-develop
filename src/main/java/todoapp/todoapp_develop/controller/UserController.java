@@ -1,10 +1,11 @@
 package todoapp.todoapp_develop.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import todoapp.todoapp_develop.dto.RequestDto.UserRequestDto;
-import todoapp.todoapp_develop.dto.ResponseDto.UserResponseDto;
+import todoapp.todoapp_develop.dto.requestdto.UserRequestDto;
+import todoapp.todoapp_develop.dto.responsedto.UserResponseDto;
 import todoapp.todoapp_develop.service.UserService;
 
 import java.util.List;
@@ -16,24 +17,19 @@ public class UserController {
     // 속성
     private final UserService userService;
 
-    // 회원가입
-    @PostMapping("/register")
-    public ResponseEntity<UserResponseDto> registerUser(@RequestBody UserRequestDto requestDto) {
-        return ResponseEntity.ok(userService.registerUser(requestDto));
-    }
-
     /** json
      *  요청------------------
      *  {
      *     "username": "minjae",
-     *     "email": "asd@gmail.com",
+     *     "password": "0000",
+     *     "email": "minjae@example.com"
      *  }
      *  ---------------------
      *  응답 -----------------
      *  {
      *     "id": 1,
      *     "username": "minjae",
-     *     "email": "asd@gmail.com",
+     *     "email": "minjae@example.com",
      *     "createdAt": ***
      *  }
      */
@@ -63,9 +59,10 @@ public class UserController {
 
     // 유저 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("유저가 삭제되었습니다.");
     }
+
 
 }

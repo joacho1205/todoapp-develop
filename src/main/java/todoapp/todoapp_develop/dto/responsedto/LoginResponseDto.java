@@ -1,4 +1,4 @@
-package todoapp.todoapp_develop.dto.ResponseDto;
+package todoapp.todoapp_develop.dto.responsedto;
 
 import lombok.Builder;
 import lombok.Getter;

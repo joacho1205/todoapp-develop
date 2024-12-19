@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import todoapp.todoapp_develop.dto.ResponseDto.UserResponseDto;
+import todoapp.todoapp_develop.dto.responsedto.UserResponseDto;
 
 @Entity
 @Getter

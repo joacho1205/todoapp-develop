@@ -3,8 +3,8 @@ package todoapp.todoapp_develop.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import todoapp.todoapp_develop.dto.RequestDto.TodoRequestDto;
-import todoapp.todoapp_develop.dto.ResponseDto.TodoResponseDto;
+import todoapp.todoapp_develop.dto.requestdto.TodoRequestDto;
+import todoapp.todoapp_develop.dto.responsedto.TodoResponseDto;
 import todoapp.todoapp_develop.service.TodoService;
 
 import java.util.List;
@@ -60,9 +60,9 @@ public class TodoController {
 
     // 일정 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTodo(@PathVariable Long id) {
+    public ResponseEntity<String> deleteTodo(@PathVariable Long id) {
         todoSerivce.deleteTodo(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("일정이 삭제되었습니다.");
     }
 
 }

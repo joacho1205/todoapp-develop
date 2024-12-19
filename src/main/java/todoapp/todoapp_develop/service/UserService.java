@@ -3,11 +3,12 @@ package todoapp.todoapp_develop.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import todoapp.todoapp_develop.config.PasswordEncoder;
 import todoapp.todoapp_develop.domain.User;
-import todoapp.todoapp_develop.dto.RequestDto.LoginRequestDto;
-import todoapp.todoapp_develop.dto.RequestDto.UserRequestDto;
-import todoapp.todoapp_develop.dto.ResponseDto.LoginResponseDto;
-import todoapp.todoapp_develop.dto.ResponseDto.UserResponseDto;
+import todoapp.todoapp_develop.dto.requestdto.LoginRequestDto;
+import todoapp.todoapp_develop.dto.requestdto.UserRequestDto;
+import todoapp.todoapp_develop.dto.responsedto.LoginResponseDto;
+import todoapp.todoapp_develop.dto.responsedto.UserResponseDto;
 import todoapp.todoapp_develop.repository.UserRepository;
 
 import java.util.List;
@@ -20,27 +21,7 @@ import java.util.stream.Collectors;
 public class UserService {
     // 속성
     private final UserRepository userRepository;
-
-    // 회원가입
-    public UserResponseDto registerUser(UserRequestDto userRequestDto) {
-        if (userRepository.existsByUsername(userRequestDto.getUsername())) {
-            throw new IllegalArgumentException("이미 사용 중인 유저명입니다.");
-        }
-        if (userRepository.existsByEmail(userRequestDto.getEmail())) {
-            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
-        }
-        User user = new User();
-        user.setUsername(userRequestDto.getUsername());
-        user.setEmail(userRequestDto.getEmail());
-        user.setPassword(userRequestDto.getPassword());
-        User savedUser = userRepository.save(user);
-        return UserResponseDto.builder()
-                .id(savedUser.getId())
-                .username(savedUser.getUsername())
-                .email(savedUser.getEmail())
-                .createdAt(savedUser.getCreatedAt())
-                .build();
-    }
+    private final PasswordEncoder passwordEncoder;
 
     // 로그인
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
@@ -61,13 +42,22 @@ public class UserService {
         if (userRepository.existsByUsername(userRequestDto.getUsername())) {
             throw new IllegalArgumentException("이미 존재하는 유저명입니다.");
         }
+        if (userRepository.existsByEmail(userRequestDto.getEmail())) {
+            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+        }
 
         User user = new User();
         user.setUsername(userRequestDto.getUsername());
+        user.setPassword(userRequestDto.getPassword());
         user.setEmail(userRequestDto.getEmail());
 
         User savedUser = userRepository.save(user);
-        return User.userResponseDto(savedUser);
+        return UserResponseDto.builder()
+                .id(savedUser.getId())
+                .username(savedUser.getUsername())
+                .email(savedUser.getEmail())
+                .createdAt(savedUser.getCreatedAt())
+                .build();
     }
 
     // 전체 유저 조회
@@ -89,13 +79,13 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
         user.setUsername(requestDto.getUsername());
+        user.setPassword(requestDto.getPassword());
         user.setEmail(requestDto.getEmail());
 
         User updatedUser = userRepository.save(user);
         return User.userResponseDto(updatedUser);
     }
 
-    // 유저 삭제
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
             throw new IllegalArgumentException("유저가 존재하지 않습니다.");
