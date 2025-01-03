@@ -1,9 +1,11 @@
-package todoapp.todoapp_develop.domain;
+package todoapp.todoapp_develop.todo.domain;
 
 import lombok.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import todoapp.todoapp_develop.dto.responsedto.TodoResponseDto;
+import todoapp.todoapp_develop.user.domain.User;
+import todoapp.todoapp_develop.todo.dto.response.TodoResponseDto;
+import todoapp.todoapp_develop.global.domain.BaseEntity;
 
 @Entity
 @Getter

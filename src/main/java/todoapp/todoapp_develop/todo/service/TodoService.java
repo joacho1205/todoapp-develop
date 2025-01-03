@@ -1,14 +1,14 @@
-package todoapp.todoapp_develop.service;
+package todoapp.todoapp_develop.todo.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import todoapp.todoapp_develop.domain.Todo;
-import todoapp.todoapp_develop.domain.User;
-import todoapp.todoapp_develop.dto.requestdto.TodoRequestDto;
-import todoapp.todoapp_develop.dto.responsedto.TodoResponseDto;
-import todoapp.todoapp_develop.repository.TodoRepository;
-import todoapp.todoapp_develop.repository.UserRepository;
+import todoapp.todoapp_develop.todo.domain.Todo;
+import todoapp.todoapp_develop.user.domain.User;
+import todoapp.todoapp_develop.todo.dto.request.TodoRequestDto;
+import todoapp.todoapp_develop.todo.dto.response.TodoResponseDto;
+import todoapp.todoapp_develop.todo.repository.TodoRepository;
+import todoapp.todoapp_develop.user.repository.UserRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;

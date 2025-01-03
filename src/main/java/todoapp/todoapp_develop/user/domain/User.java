@@ -1,4 +1,4 @@
-package todoapp.todoapp_develop.domain;
+package todoapp.todoapp_develop.user.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -6,7 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import todoapp.todoapp_develop.dto.responsedto.UserResponseDto;
+import todoapp.todoapp_develop.user.dto.response.UserResponseDto;
+import todoapp.todoapp_develop.global.domain.BaseEntity;
 
 @Entity
 @Getter

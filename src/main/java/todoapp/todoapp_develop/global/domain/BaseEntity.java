@@ -1,4 +1,4 @@
-package todoapp.todoapp_develop.domain;
+package todoapp.todoapp_develop.global.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;

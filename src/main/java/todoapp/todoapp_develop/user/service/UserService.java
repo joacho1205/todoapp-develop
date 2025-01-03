@@ -1,15 +1,14 @@
-package todoapp.todoapp_develop.service;
+package todoapp.todoapp_develop.user.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import todoapp.todoapp_develop.config.PasswordEncoder;
-import todoapp.todoapp_develop.domain.User;
-import todoapp.todoapp_develop.dto.requestdto.LoginRequestDto;
-import todoapp.todoapp_develop.dto.requestdto.UserRequestDto;
-import todoapp.todoapp_develop.dto.responsedto.LoginResponseDto;
-import todoapp.todoapp_develop.dto.responsedto.UserResponseDto;
-import todoapp.todoapp_develop.repository.UserRepository;
+import todoapp.todoapp_develop.user.domain.User;
+import todoapp.todoapp_develop.auth.dto.request.LoginRequestDto;
+import todoapp.todoapp_develop.user.dto.request.UserRequestDto;
+import todoapp.todoapp_develop.auth.dto.response.LoginResponseDto;
+import todoapp.todoapp_develop.user.dto.response.UserResponseDto;
+import todoapp.todoapp_develop.user.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 public class UserService {
     // 속성
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
     // 로그인
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {

@@ -1,17 +1,17 @@
-package todoapp.todoapp_develop.dto.responsedto;
+package todoapp.todoapp_develop.user.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @Builder
-public class TodoResponseDto {
+public class UserResponseDto {
     private Long id;
     private String username;
-    private String title;
-    private String todo;
+    private String email;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }

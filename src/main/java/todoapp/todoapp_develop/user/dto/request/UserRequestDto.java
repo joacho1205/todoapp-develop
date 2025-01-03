@@ -1,4 +1,4 @@
-package todoapp.todoapp_develop.dto.requestdto;
+package todoapp.todoapp_develop.user.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
