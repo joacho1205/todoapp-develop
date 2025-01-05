@@ -47,15 +47,10 @@ public class TodoService {
     public TodoResponseDto updateTodo(Long id, TodoRequestDto requestDto, Long userId) {
         Todo todo = todoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 할일입니다."));
-
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
-        if (!todo.isWriter(user)) {
-            throw new IllegalArgumentException("수정 권한이 없습니다.");
-        }
-
-        todo.update(requestDto.getTitle(), requestDto.getContent());
+        todo.update(requestDto.getTitle(), requestDto.getContent(), user);
         return new TodoResponseDto(todo);
     }
 
@@ -63,14 +58,10 @@ public class TodoService {
     public void deleteTodo(Long id, Long userId) {
         Todo todo = todoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 할일입니다."));
-
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
-        if (!todo.isWriter(user)) {
-            throw new IllegalArgumentException("삭제 권한이 없습니다.");
-        }
-
+        todo.delete(user);
         todoRepository.delete(todo);
     }
 

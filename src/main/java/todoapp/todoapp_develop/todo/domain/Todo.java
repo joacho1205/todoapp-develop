@@ -31,12 +31,23 @@ public class Todo extends BaseEntity {
         this.user = user;
     }
 
-    public void update(String title, String content) {
+    public void validateWriter(User user) {
+        if (!isWriter(user)) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
+    }
+
+    public void update(String title, String content, User user) {
+        validateWriter(user);
         this.title = title;
         this.content = content;
     }
 
-    public boolean isWriter(User user) {
+    public void delete(User user) {
+        validateWriter(user);
+    }
+
+    private boolean isWriter(User user) {
         return this.user.getId().equals(user.getId());
     }
 }

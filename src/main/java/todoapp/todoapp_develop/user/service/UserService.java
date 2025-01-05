@@ -23,18 +23,14 @@ public class UserService {
     @Transactional
     public UserResponseDto signup(UserRequestDto requestDto) {
         validateSignup(requestDto);
-        User user = requestDto.toEntity(passwordEncoder);  // 암호화된 비밀번호로 저장
+        User user = requestDto.toEntity(passwordEncoder);
         return new UserResponseDto(userRepository.save(user));
     }
 
     public User login(LoginRequestDto requestDto) {
         User user = userRepository.findByEmail(requestDto.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
-
-        if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-        }
-
+        user.validatePassword(requestDto.getPassword(), passwordEncoder);
         return user;
     }
 
@@ -54,11 +50,7 @@ public class UserService {
     public UserResponseDto updateUser(Long id, UserRequestDto requestDto, Long loginUserId) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-
-        if (!user.getId().equals(loginUserId)) {
-            throw new IllegalArgumentException("수정 권한이 없습니다.");
-        }
-
+        user.validateUpdate(loginUserId);
         user.update(requestDto.getUsername());
         return new UserResponseDto(user);
     }
@@ -67,11 +59,7 @@ public class UserService {
     public void deleteUser(Long id, Long loginUserId) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-
-        if (!user.getId().equals(loginUserId)) {
-            throw new IllegalArgumentException("삭제 권한이 없습니다.");
-        }
-
+        user.validateDelete(loginUserId);
         userRepository.delete(user);
     }
 

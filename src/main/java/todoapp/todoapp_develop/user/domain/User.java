@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import todoapp.todoapp_develop.global.config.PasswordEncoder;
 import todoapp.todoapp_develop.global.domain.BaseEntity;
 
 @Entity
@@ -31,6 +32,24 @@ public class User extends BaseEntity {
         this.username = username;
         this.email = email;
         this.password = password;
+    }
+
+    public void validatePassword(String rawPassword, PasswordEncoder passwordEncoder) {
+        if (!passwordEncoder.matches(rawPassword, this.password)) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+    }
+
+    public void validateUpdate(Long loginUserId) {
+        if (!this.id.equals(loginUserId)) {
+            throw new IllegalArgumentException("수정 권한이 없습니다.");
+        }
+    }
+
+    public void validateDelete(Long loginUserId) {
+        if (!this.id.equals(loginUserId)) {
+            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+        }
     }
 
     public void update(String username) {
