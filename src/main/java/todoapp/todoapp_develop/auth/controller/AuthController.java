@@ -9,28 +9,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import todoapp.todoapp_develop.auth.dto.request.LoginRequestDto;
 import todoapp.todoapp_develop.auth.dto.response.LoginResponseDto;
+import todoapp.todoapp_develop.global.util.SessionUtil;
+import todoapp.todoapp_develop.user.domain.User;
 import todoapp.todoapp_develop.user.service.UserService;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    // 로그인 요청을 처리하는 컨트롤러
     private final UserService userService;
 
-    // 로그인
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto requestDto, HttpSession session) {
-        LoginResponseDto responseDto = userService.login(requestDto);
-        session.setAttribute("user", responseDto.getUsername());
-        return ResponseEntity.ok(responseDto);
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto requestDto,
+                                                  HttpSession session) {
+        User user = userService.login(requestDto);
+        SessionUtil.setLoginUserId(session, user.getId());
+        return ResponseEntity.ok(new LoginResponseDto(user));
     }
 
-    // 로그아웃
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpSession session) {
-        session.invalidate();
-        return ResponseEntity.ok("로그아웃 되었습니다.");
+    public ResponseEntity<Void> logout(HttpSession session) {
+        SessionUtil.logout(session);
+        return ResponseEntity.ok().build();
     }
 
 }

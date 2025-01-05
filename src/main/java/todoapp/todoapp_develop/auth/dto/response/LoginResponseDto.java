@@ -1,11 +1,15 @@
 package todoapp.todoapp_develop.auth.dto.response;
 
-import lombok.Builder;
+import todoapp.todoapp_develop.user.domain.User;
 import lombok.Getter;
 
 @Getter
-@Builder
 public class LoginResponseDto {
-    private String message; // 로그인 성공여부 메시지 출력
-    private String username; // 비밀번호는 당연히 출력되지 말아야 한다
+    private final Long userId;
+    private final String username;
+
+    public LoginResponseDto(User user) {
+        this.userId = user.getId();
+        this.username = user.getUsername();
+    }
 }

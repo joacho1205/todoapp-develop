@@ -1,94 +1,87 @@
 package todoapp.todoapp_develop.user.service;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import todoapp.todoapp_develop.global.config.PasswordEncoder;
 import todoapp.todoapp_develop.user.domain.User;
 import todoapp.todoapp_develop.auth.dto.request.LoginRequestDto;
 import todoapp.todoapp_develop.user.dto.request.UserRequestDto;
-import todoapp.todoapp_develop.auth.dto.response.LoginResponseDto;
 import todoapp.todoapp_develop.user.dto.response.UserResponseDto;
 import todoapp.todoapp_develop.user.repository.UserRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class UserService {
-    // 속성
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    // 로그인
-    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-        Optional<User> loginUser = userRepository.findByEmail(loginRequestDto.getEmail());
-        User user = loginUser.orElseThrow(() -> new IllegalArgumentException("이메일 또는 비밀번호가 잘못되었습니다."));
-        if (!user.getPassword().equals(loginRequestDto.getPassword())) {
-            throw new IllegalArgumentException("이메일 또는 비밀번호가 잘못되었습니다.");
-        }
-
-        return LoginResponseDto.builder()
-                .message("로그인 성공")
-                .username(user.getUsername())
-                .build();
+    @Transactional
+    public UserResponseDto signup(UserRequestDto requestDto) {
+        validateSignup(requestDto);
+        User user = requestDto.toEntity(passwordEncoder);  // 암호화된 비밀번호로 저장
+        return new UserResponseDto(userRepository.save(user));
     }
 
-    // 유저 생성
-    public UserResponseDto createUser(UserRequestDto userRequestDto) {
-        if (userRepository.existsByUsername(userRequestDto.getUsername())) {
-            throw new IllegalArgumentException("이미 존재하는 유저명입니다.");
-        }
-        if (userRepository.existsByEmail(userRequestDto.getEmail())) {
-            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+    public User login(LoginRequestDto requestDto) {
+        User user = userRepository.findByEmail(requestDto.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
+
+        if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        User user = new User();
-        user.setUsername(userRequestDto.getUsername());
-        user.setPassword(userRequestDto.getPassword());
-        user.setEmail(userRequestDto.getEmail());
-
-        User savedUser = userRepository.save(user);
-        return UserResponseDto.builder()
-                .id(savedUser.getId())
-                .username(savedUser.getUsername())
-                .email(savedUser.getEmail())
-                .createdAt(savedUser.getCreatedAt())
-                .build();
+        return user;
     }
 
-    // 전체 유저 조회
     public List<UserResponseDto> getAllUsers() {
         return userRepository.findAll().stream()
-                .map(User::userResponseDto)
+                .map(UserResponseDto::new)
                 .collect(Collectors.toList());
     }
 
-    // 선택 유저 조회
     public UserResponseDto getUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
-        return User.userResponseDto(user);
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        return new UserResponseDto(user);
     }
 
-    // 유저 수정
-    public UserResponseDto updateUser(Long id, UserRequestDto requestDto) {
+    @Transactional
+    public UserResponseDto updateUser(Long id, UserRequestDto requestDto, Long loginUserId) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
-        user.setUsername(requestDto.getUsername());
-        user.setPassword(requestDto.getPassword());
-        user.setEmail(requestDto.getEmail());
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
-        User updatedUser = userRepository.save(user);
-        return User.userResponseDto(updatedUser);
+        if (!user.getId().equals(loginUserId)) {
+            throw new IllegalArgumentException("수정 권한이 없습니다.");
+        }
+
+        user.update(requestDto.getUsername());
+        return new UserResponseDto(user);
     }
 
-    public void deleteUser(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new IllegalArgumentException("유저가 존재하지 않습니다.");
+    @Transactional
+    public void deleteUser(Long id, Long loginUserId) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        if (!user.getId().equals(loginUserId)) {
+            throw new IllegalArgumentException("삭제 권한이 없습니다.");
         }
-        userRepository.deleteById(id);
+
+        userRepository.delete(user);
+    }
+
+    private void validateSignup(UserRequestDto requestDto) {
+        if (userRepository.existsByEmail(requestDto.getEmail())) {
+            throw new IllegalArgumentException("이미 사용중인 이메일입니다.");
+        }
+        if (userRepository.existsByUsername(requestDto.getUsername())) {
+            throw new IllegalArgumentException("이미 사용중인 사용자명입니다.");
+        }
     }
 
 }

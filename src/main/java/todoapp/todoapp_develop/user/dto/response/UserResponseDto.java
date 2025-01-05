@@ -1,17 +1,21 @@
 package todoapp.todoapp_develop.user.dto.response;
 
-import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import todoapp.todoapp_develop.user.domain.User;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
-@Builder
 public class UserResponseDto {
-    private Long id;
-    private String username;
-    private String email;
-    private LocalDateTime createdAt;
+    private final Long id;
+    private final String username;
+    private final String email;
+    private final LocalDateTime createdAt;
+
+    public UserResponseDto(User user) {
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.email = user.getEmail();
+        this.createdAt = user.getCreatedAt();
+    }
 }
