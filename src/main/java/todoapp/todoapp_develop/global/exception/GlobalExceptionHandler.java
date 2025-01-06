@@ -1,39 +1,51 @@
 package todoapp.todoapp_develop.global.exception;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-    // Valid 어노테이션으로 검증 실패시 발생하는 예외 처리
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        String errorMessage = ex.getBindingResult()
-                .getAllErrors()
-                .get(0)
-                .getDefaultMessage();
-
-        ErrorResponse response = new ErrorResponse("ERR001", errorMessage);
-        return ResponseEntity.badRequest().body(response);
+    @ExceptionHandler(CustomRuntimeException.class)
+    protected ResponseEntity<ErrorResponse> handleCustomException(final CustomRuntimeException e) {
+        ErrorResponse response = new ErrorResponse(e.getErrorCode());
+        return createResponseEntity(response);
     }
 
-    // IllegalArgumentException 처리
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
-        ErrorResponse response = new ErrorResponse("ERR002", ex.getMessage());
-        return ResponseEntity.badRequest().body(response);
+    protected ResponseEntity<ErrorResponse> handleIllegalArgumentException(final IllegalArgumentException e) {
+        ErrorResponse response = new ErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+        return createResponseEntity(response);
     }
 
-    // 그 외 모든 예외 처리
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
+        ErrorResponse response = new ErrorResponse(HttpStatus.BAD_REQUEST, e.getBindingResult().getFieldError().getDefaultMessage());
+        return createResponseEntity(response);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    protected ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(final MethodArgumentTypeMismatchException e) {
+        ErrorResponse response = new ErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+        return createResponseEntity(response);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    protected ResponseEntity<ErrorResponse> handleRuntimeException(final RuntimeException e) {
+        ErrorResponse response = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        return createResponseEntity(response);
+    }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleAllExceptions(Exception ex) {
-        ErrorResponse response = new ErrorResponse(
-                "ERR003",
-                "네트워크 요청에 실패했습니다. 다시 시도해주시기 바랍니다."
-        );
-        return ResponseEntity.internalServerError().body(response);
+    protected ResponseEntity<ErrorResponse> handleException(final Exception e) {
+        ErrorResponse response = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        return createResponseEntity(response);
+    }
+
+    private ResponseEntity<ErrorResponse> createResponseEntity(ErrorResponse response) {
+        return ResponseEntity.status(response.httpStatus()).body(response);
     }
 }

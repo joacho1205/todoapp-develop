@@ -3,6 +3,9 @@ package todoapp.todoapp_develop.todo.service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import todoapp.todoapp_develop.global.exception.ErrorCode;
+import todoapp.todoapp_develop.global.exception.TodoNotFoundException;
+import todoapp.todoapp_develop.global.exception.UserNotExistingException;
 import todoapp.todoapp_develop.todo.domain.Todo;
 import todoapp.todoapp_develop.user.domain.User;
 import todoapp.todoapp_develop.todo.dto.request.TodoRequestDto;
@@ -23,7 +26,7 @@ public class TodoService {
     @Transactional
     public TodoResponseDto createTodo(TodoRequestDto requestDto, Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new UserNotExistingException(ErrorCode.USER_NOT_FOUND));
 
         Todo todo = todoRepository.save(requestDto.toEntity(user));
         return new TodoResponseDto(todo);
@@ -39,16 +42,16 @@ public class TodoService {
     // 선택 일정 조회
     public TodoResponseDto getTodo(Long id) {
         Todo todo = todoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 할일입니다."));
+                .orElseThrow(() -> new TodoNotFoundException(ErrorCode.TODO_NOT_FOUND));
         return new TodoResponseDto(todo);
     }
 
     @Transactional
     public TodoResponseDto updateTodo(Long id, TodoRequestDto requestDto, Long userId) {
         Todo todo = todoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 할일입니다."));
+                .orElseThrow(() -> new TodoNotFoundException(ErrorCode.TODO_NOT_FOUND));
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new UserNotExistingException(ErrorCode.USER_NOT_FOUND));
 
         todo.update(requestDto.getTitle(), requestDto.getContent(), user);
         return new TodoResponseDto(todo);
@@ -57,9 +60,9 @@ public class TodoService {
     @Transactional
     public void deleteTodo(Long id, Long userId) {
         Todo todo = todoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 할일입니다."));
+                .orElseThrow(() -> new TodoNotFoundException(ErrorCode.TODO_NOT_FOUND));
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new UserNotExistingException(ErrorCode.USER_NOT_FOUND));
 
         todo.delete(user);
         todoRepository.delete(todo);

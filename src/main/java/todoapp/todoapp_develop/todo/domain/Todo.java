@@ -2,6 +2,8 @@ package todoapp.todoapp_develop.todo.domain;
 
 import lombok.*;
 import jakarta.persistence.*;
+import todoapp.todoapp_develop.global.exception.ErrorCode;
+import todoapp.todoapp_develop.global.exception.UnauthorizedException;
 import todoapp.todoapp_develop.user.domain.User;
 import todoapp.todoapp_develop.global.domain.BaseEntity;
 
@@ -33,7 +35,7 @@ public class Todo extends BaseEntity {
 
     public void validateWriter(User user) {
         if (!isWriter(user)) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new UnauthorizedException(ErrorCode.UNAUTHORIZED);
         }
     }
 

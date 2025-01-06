@@ -4,6 +4,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import todoapp.todoapp_develop.global.config.PasswordEncoder;
+import todoapp.todoapp_develop.global.exception.*;
 import todoapp.todoapp_develop.user.domain.User;
 import todoapp.todoapp_develop.auth.dto.request.LoginRequestDto;
 import todoapp.todoapp_develop.user.dto.request.UserRequestDto;
@@ -29,7 +30,7 @@ public class UserService {
 
     public User login(LoginRequestDto requestDto) {
         User user = userRepository.findByEmail(requestDto.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
+                .orElseThrow(() -> new EmailNotFoundException(ErrorCode.EMAIL_NOT_FOUND));
         user.validatePassword(requestDto.getPassword(), passwordEncoder);
         return user;
     }
@@ -42,14 +43,14 @@ public class UserService {
 
     public UserResponseDto getUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new UserNotExistingException(ErrorCode.USER_NOT_FOUND));
         return new UserResponseDto(user);
     }
 
     @Transactional
     public UserResponseDto updateUser(Long id, UserRequestDto requestDto, Long loginUserId) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new UserNotExistingException(ErrorCode.USER_NOT_FOUND));
         user.validateUpdate(loginUserId);
         user.update(requestDto.getUsername());
         return new UserResponseDto(user);
@@ -58,17 +59,17 @@ public class UserService {
     @Transactional
     public void deleteUser(Long id, Long loginUserId) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new UserNotExistingException(ErrorCode.USER_NOT_FOUND));
         user.validateDelete(loginUserId);
         userRepository.delete(user);
     }
 
     private void validateSignup(UserRequestDto requestDto) {
         if (userRepository.existsByEmail(requestDto.getEmail())) {
-            throw new IllegalArgumentException("이미 사용중인 이메일입니다.");
+            throw new ExistingEmailException(ErrorCode.EXISTING_EMAIL);
         }
         if (userRepository.existsByUsername(requestDto.getUsername())) {
-            throw new IllegalArgumentException("이미 사용중인 사용자명입니다.");
+            throw new ExistingUserNameException(ErrorCode.EXISTING_USERNAME);
         }
     }
 
